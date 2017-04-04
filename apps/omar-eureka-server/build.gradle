@@ -2,7 +2,8 @@ buildscript {
 	ext {
 		springBootVersion = '1.4.0.RELEASE'
      baseImage = "omar-base"
-     ports = "8761"
+     ports = 8761
+     runAsRoot=true
 	}
   if(System.env.OMAR_COMMON_PROPERTIES)
   {
