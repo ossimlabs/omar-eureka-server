@@ -1,0 +1,22 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/omar-eureka-server/eureka/
+  instance:
+    hostname: localhost
+---
+spring:
+  profiles: production
+  cloud:
+    config:
+      uri: http://omar-config-server:8888/omar-config-server
+
+eureka:
+  instance:
+    hostname: omar-eureka-server
+#    hostname: localhost
