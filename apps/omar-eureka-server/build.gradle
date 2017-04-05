@@ -2,15 +2,25 @@ buildscript {
 	ext {
 		springBootVersion = '1.4.0.RELEASE'
      baseImage = "omar-base"
-     ports = 8761
-     runAsRoot=true
-     enableSpringCloud=false
+     dockerStatementsOverride = {
+       [
+          "FROM ${project.dockerNamespaceUrl}${project.ext.baseImage}:${project.dockerAppTag}",
 
+          "MAINTAINER RadiantBlue Technologies radiantblue.com",
+          """LABEL com.radiantblue.version="" """,
+          "RUN yum -y install java-1.8.0-openjdk-devel",
+          "ADD ${project.name}-${buildVersion}-${buildVersionTag}.jar, /usr/share",
+          "VOLUME /dev/random /home /Users",
+          "EXPOSE 8761",
+          "CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.egd=file:/dev/./urandom -Dserver.contextPath=/omar-eureka-server -jar /usr/share/${project.name}-${buildVersion}-${buildVersionTag}.jar"
+
+       ]
+     }
 	}
-    if(System.env.OMAR_COMMON_PROPERTIES)
-    {
+  if(System.env.OMAR_COMMON_PROPERTIES)
+  {
       apply from: System.env.OMAR_COMMON_PROPERTIES
-    }
+  }
    repositories {
       mavenLocal()
       maven { url "${ossimMavenProxy}" }
