@@ -4,11 +4,13 @@ buildscript {
      baseImage = "omar-base"
      ports = 8761
      runAsRoot=true
+     enableSpringCloud=false
+
 	}
-  if(System.env.OMAR_COMMON_PROPERTIES)
-  {
-    apply from: System.env.OMAR_COMMON_PROPERTIES
-  }
+    if(System.env.OMAR_COMMON_PROPERTIES)
+    {
+      apply from: System.env.OMAR_COMMON_PROPERTIES
+    }
    repositories {
       mavenLocal()
       maven { url "${ossimMavenProxy}" }
@@ -29,6 +31,7 @@ apply plugin: "maven"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group "io.ossim.omar.apps"
+
 
 repositories {
   mavenLocal()
