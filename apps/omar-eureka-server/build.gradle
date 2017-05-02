@@ -6,12 +6,15 @@ buildscript {
        [
           "FROM ${project.dockerNamespaceUrl}${project.ext.baseImage}:${project.dockerAppTag}",
 
-          "MAINTAINER RadiantBlue Technologies radiantblue.com",
-          """LABEL com.radiantblue.version="" """,
-          "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar /usr/share",
+          "MAINTAINER DigitalGlobe-RadiantBlue",
+          """LABEL com.digitalglobe.version="" """,
+					"RUN mkdir /usr/share/omar",
+          "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar /usr/share/omar",
+					"USER 1001",
+          "WORKDIR /usr/share/omar",
           "VOLUME /dev/random /home /Users",
           "EXPOSE 8761",
-          "CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.egd=file:/dev/./urandom -Dserver.contextPath=/omar-eureka-server -jar /usr/share/${project.name}-${buildVersion}-${buildVersionTag}.jar"
+          "CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.egd=file:/dev/./urandom -Dserver.contextPath=/omar-eureka-server -jar /usr/share/omar/${project.name}-${buildVersion}-${buildVersionTag}.jar"
 
        ]
      }
