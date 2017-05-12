@@ -3,7 +3,6 @@
 ## Dockerfile
 ```
 FROM omar-base
-EXPOSE 8080
 RUN mkdir /usr/share/omar
 COPY omar-eureka-server-1.0.0-SNAPSHOT.jar /usr/share/omar
 RUN chown -R 1001:0 /usr/share/omar
