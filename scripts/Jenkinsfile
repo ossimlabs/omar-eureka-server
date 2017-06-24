@@ -57,7 +57,7 @@ node("slave"){
             // Run all tasks on the app. This includes pushing to OpenShift and S3.
             sh """
             pushd ${workspaceDir}/${appName}/apps/${appName}
-            ./gradlew --stacktrace ${GRADLE_TASK}
+            ./gradlew ${GRADLE_TASK}
             popd
             """
         }
@@ -68,7 +68,7 @@ node("slave"){
         currentBuild.result = "FAILED"
         notifyObj?.notifyFailed()
     }
-  stage("Clean Workspace"){
-     step([$class: 'WsCleanup'])
-  }
+//  stage("Clean Workspace"){
+//     step([$class: 'WsCleanup'])
+//  }
 }
