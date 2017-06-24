@@ -31,8 +31,8 @@ node("slave"){
 
         notifyObj = load "${workspaceDir}/ossim-ci/jenkins/pipeline/notify.groovy"
     }
-//
-//    try {
+
+    try {
       stage ("Publish App Artifactory")
       {
           withCredentials([[$class: 'UsernamePasswordMultiBinding',
@@ -42,7 +42,7 @@ node("slave"){
             {
               sh """
               pushd ${workspaceDir}/${appName}/apps/${appName}
-              ./gradlew artifactoryPublish
+              ./gradlew --stacktrace artifactoryPublish
               popd
               """
             }
@@ -62,12 +62,12 @@ node("slave"){
             """
         }
       }
-//    }
-//    catch(e){
-//        echo e.toString()
-//        currentBuild.result = "FAILED"
-//        notifyObj?.notifyFailed()
-//    }
+    }
+    catch(e){
+        echo e.toString()
+        currentBuild.result = "FAILED"
+        notifyObj?.notifyFailed()
+    }
   stage("Clean Workspace"){
      step([$class: 'WsCleanup'])
   }
