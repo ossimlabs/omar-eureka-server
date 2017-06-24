@@ -11,7 +11,7 @@
 //==================================================================================================
 
 // TODO: get to run on any node
-node(""){
+node("slave"){
     def workspaceDir = pwd()
     def appName = "omar-eureka-server"
     def omarCommonProjName = "omar-common"
@@ -64,6 +64,7 @@ node(""){
       }
     }
     catch(e){
+        e.printStackTrace()
         echo e.toString()
         currentBuild.result = "FAILED"
         notifyObj?.notifyFailed()
