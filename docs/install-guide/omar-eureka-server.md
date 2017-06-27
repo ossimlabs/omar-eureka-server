@@ -18,4 +18,4 @@ CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.
 Ref: [omar-base](../../../omar-base/docs/install-guide/omar-ossim-base/)
 
 ## JAR
-`http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-eureka-server`
+[http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-eureka-server](http://artifacts.radiantbluecloud.com/artifactory/webapp/#/artifacts/browse/tree/General/omar-local/io/ossim/omar/apps/omar-eureka-server)
