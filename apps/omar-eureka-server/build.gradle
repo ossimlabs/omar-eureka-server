@@ -8,11 +8,10 @@ buildscript {
 
           "MAINTAINER DigitalGlobe-RadiantBlue",
           """LABEL com.digitalglobe.version="" """,
-          "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar /home/omar",
-          "WORKDIR /home/omar",
-          "VOLUME /dev/random /home /Users",
+          "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar \$HOME/",
           "EXPOSE 8761",
-          "CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.egd=file:/dev/./urandom -Dserver.contextPath=/omar-eureka-server -jar /home/omar/${project.name}-${buildVersion}-${buildVersionTag}.jar"
+          "WORKDIR \$HOME",
+          "CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.egd=file:/dev/./urandom -Dserver.contextPath=/omar-eureka-server -jar ./${project.name}-${buildVersion}-${buildVersionTag}.jar"
 
        ]
      }
