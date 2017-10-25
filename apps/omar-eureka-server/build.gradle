@@ -9,8 +9,11 @@ buildscript {
           """LABEL com.digitalglobe.version="" """,
           "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar \$HOME/",
           "EXPOSE 8761",
-          "WORKDIR /home/omar",
-          "CMD java -Xms256m -Xmx1024m -Dspring.profiles.active=production -Djava.security.egd=file:/dev/./urandom -Dserver.contextPath=/omar-eureka-server -jar ./${project.name}-${buildVersion}-${buildVersionTag}.jar"
+          "WORKDIR \$HOME",
+	  "USER root",
+          "RUN chmod 755 /home/omar && chmod 644 /home/omar/*",
+          "USER 1001",
+          "CMD java -Xms256m -Xmx1024m -Djava.security.egd=file:/dev/./urandom -jar ./${project.name}-${buildVersion}-${buildVersionTag}.jar"
 
        ]
      }
