@@ -1,3 +1,8 @@
+---
+# Set the context path for the application.
+#server:
+#  contextPath: /omar-eureka-server
+
 spring:
   application:
     name: omar-eureka-server
