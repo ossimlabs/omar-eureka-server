@@ -3,9 +3,6 @@
 ## Purpose
 The Eureka server provides a Spring Framework discovery client for all OMAR services. This discovery client is utilized for a variety of routing, metrics, and aggregation tasks.
 
-## Purpose
-The Eureka server provides a Spring Framework discovery client for all OMAR services. This discovery client is utilized for a variety of routing, metrics, and aggregation tasks.
-
 ## Installation in Openshift
 
 **Assumption:** The omar-eureka-server docker image is pushed into the OpenShift server's internal docker registry and available to the project.
