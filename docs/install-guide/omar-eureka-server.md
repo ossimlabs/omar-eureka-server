@@ -1,8 +1,5 @@
 # OMAR Eureka Server
 
-## Source Location
-https://github.com/ossimlabs/omar-eureka-server
-
 ## Purpose
 The Eureka server provides a Spring Framework discovery client for all OMAR services. This discovery client is utilized for a variety of routing, metrics, and aggregation tasks.
 
