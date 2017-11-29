@@ -5,8 +5,6 @@ buildscript {
      dockerStatementsOverride = {
        [
           "FROM ${project.dockerNamespaceUrl}${project.ext.baseImage}:${project.dockerAppTag}",
-          "MAINTAINER DigitalGlobe-RadiantBlue",
-          """LABEL com.digitalglobe.version="" """,
           "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar \$HOME/",
           "EXPOSE 8761",
           "WORKDIR \$HOME",
