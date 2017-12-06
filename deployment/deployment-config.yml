@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: omar-eureka-server
+  namespace: omar-dev
+  selfLink: /oapi/v1/namespaces/omar-dev/deploymentconfigs/omar-eureka-server
+  uid: dcaf116d-82c2-11e7-ba3b-0e704fd9c8b2
+  resourceVersion: '8863096'
+  generation: 125
+  creationTimestamp: '2017-08-16T20:38:29Z'
+  labels:
+    app: omar-openshift
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - omar-eureka-server
+        from:
+          kind: ImageStreamTag
+          namespace: o2
+          name: 'omar-eureka-server:latest'
+        lastTriggeredImage: >-
+          172.30.181.173:5000/o2/omar-eureka-server@sha256:16364a3d8878195d8568447e816398ff0004a04a05bd66226dafada5b369e73d
+  replicas: 1
+  test: false
+  selector:
+    app: omar-openshift
+    deploymentconfig: omar-eureka-server
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: omar-openshift
+        deploymentconfig: omar-eureka-server
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+    spec:
+      volumes:
+        - name: omar-eureka-server-2
+          emptyDir: {}
+      containers:
+        - name: omar-eureka-server
+          image: >-
+            172.30.181.173:5000/o2/omar-eureka-server@sha256:16364a3d8878195d8568447e816398ff0004a04a05bd66226dafada5b369e73d
+          ports:
+            - containerPort: 8761
+              protocol: TCP
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'production,dev'
+          resources: {}
+          volumeMounts:
+            - name: omar-eureka-server-2
+              mountPath: /dev/random
+          livenessProbe:
+            tcpSocket:
+              port: 8761
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8761
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+status:
+  latestVersion: 115
+  observedGeneration: 125
+  replicas: 1
+  updatedReplicas: 1
+  availableReplicas: 1
+  unavailableReplicas: 0
+  details:
+    message: image change
+    causes:
+      - type: ImageChange
+        imageTrigger:
+          from:
+            kind: ImageStreamTag
+            namespace: o2
+            name: 'omar-eureka-server:latest'
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2017-11-27T17:33:15Z'
+      lastTransitionTime: '2017-11-27T17:33:15Z'
+      message: Deployment config has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2017-11-30T12:31:57Z'
+      lastTransitionTime: '2017-11-30T12:31:56Z'
+      reason: NewReplicationControllerAvailable
+      message: replication controller "omar-eureka-server-115" successfully rolled out
+  readyReplicas: 1
