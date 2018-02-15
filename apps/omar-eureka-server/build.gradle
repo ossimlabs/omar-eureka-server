@@ -30,6 +30,11 @@ buildscript {
 	}
 }
 
+plugins {
+  id "com.github.ben-manes.versions" version "0.17.0"
+}
+
+
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
@@ -50,7 +55,7 @@ repositories {
 
 
 dependencies {
-  compile "de.codecentric:spring-boot-admin-starter-client:1.5.4"
+  compile "de.codecentric:spring-boot-admin-starter-client:${springBootAdminStarterClientV}"
   compile('org.springframework.cloud:spring-cloud-starter-config')
   compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
 	compile('org.codehaus.groovy:groovy')
