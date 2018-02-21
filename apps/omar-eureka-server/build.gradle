@@ -1,19 +1,21 @@
 buildscript {
+  ext {
+    baseImage = "omar-base"    
+  }
   if(System.env.OMAR_COMMON_PROPERTIES)
   {
       apply from: System.env.OMAR_COMMON_PROPERTIES
   }
- 
+
 	ext {
 		springBootVersion = "${springBootV}"
-     baseImage = "omar-base"
      dockerStatementsOverride = {
        [
           "FROM ${project.dockerNamespaceUrl}${project.ext.baseImage}:${project.dockerAppTag}",
           "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar \$HOME/",
           "EXPOSE 8761",
           "WORKDIR \$HOME",
-	  "USER root",
+      	  "USER root",
           "RUN chmod 755 /home/omar && chmod 644 /home/omar/*",
           "USER 1001",
           "CMD java -Xms256m -Xmx1024m -Djava.security.egd=file:/dev/./urandom -jar ./${project.name}-${buildVersion}-${buildVersionTag}.jar"
