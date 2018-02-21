@@ -1,14 +1,21 @@
 buildscript {
+  ext {
+    baseImage = "omar-base"    
+  }
+  if(System.env.OMAR_COMMON_PROPERTIES)
+  {
+      apply from: System.env.OMAR_COMMON_PROPERTIES
+  }
+
 	ext {
-		springBootVersion = '1.5.9.RELEASE'
-     baseImage = "omar-base"
+		springBootVersion = "${springBootV}"
      dockerStatementsOverride = {
        [
           "FROM ${project.dockerNamespaceUrl}${project.ext.baseImage}:${project.dockerAppTag}",
           "COPY ${project.name}-${buildVersion}-${buildVersionTag}.jar \$HOME/",
           "EXPOSE 8761",
           "WORKDIR \$HOME",
-	  "USER root",
+      	  "USER root",
           "RUN chmod 755 /home/omar && chmod 644 /home/omar/*",
           "USER 1001",
           "CMD java -Xms256m -Xmx1024m -Djava.security.egd=file:/dev/./urandom -jar ./${project.name}-${buildVersion}-${buildVersionTag}.jar"
@@ -16,11 +23,7 @@ buildscript {
        ]
      }
 	}
-  if(System.env.OMAR_COMMON_PROPERTIES)
-  {
-      apply from: System.env.OMAR_COMMON_PROPERTIES
-  }
-   repositories {
+  repositories {
       mavenLocal()
       maven { url "${ossimMavenProxy}" }
       mavenCentral()
@@ -29,6 +32,11 @@ buildscript {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
+
+plugins {
+  id "com.github.ben-manes.versions" version "0.17.0"
+}
+
 
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -50,7 +58,7 @@ repositories {
 
 
 dependencies {
-  compile "de.codecentric:spring-boot-admin-starter-client:1.5.4"
+  compile "de.codecentric:spring-boot-admin-starter-client:${springBootAdminStarterClientV}"
   compile('org.springframework.cloud:spring-cloud-starter-config')
   compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
 	compile('org.codehaus.groovy:groovy')
@@ -59,7 +67,7 @@ dependencies {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR5"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependencyV}"
 	}
 }
 
