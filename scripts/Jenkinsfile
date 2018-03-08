@@ -17,6 +17,7 @@ node("slave"){
     def appName = "omar-eureka-server"
     def omarCommonProjName = "omar-common"
     env.OMAR_COMMON_PROPERTIES="${workspaceDir}/${omarCommonProjName}/omar-common-properties.gradle"
+    env.O2_DEV_HOME=pwd()
 
     stage("Checkout"){
         dir(appName) {
@@ -46,8 +47,8 @@ node("slave"){
                             passwordVariable: 'ARTIFACTORY_PASSWORD']])
             {
               sh """
-              pushd ${workspaceDir}/${appName}/apps/${appName}
-              ./gradlew artifactoryPublish
+              pushd ${workspaceDir}/${appName}
+              ./gradlew :${appName}:artifactoryPublish
               popd
               """
             }
@@ -61,8 +62,8 @@ node("slave"){
         {
             // Run all tasks on the app. This includes pushing to OpenShift and S3.
             sh """
-            pushd ${workspaceDir}/${appName}/apps/${appName}
-            ./gradlew ${GRADLE_TASK}
+            pushd ${workspaceDir}/${appName}
+            ./gradlew :${appName}:${GRADLE_TASK}
             popd
             """
         }
