@@ -27,7 +27,7 @@ buildscript {
 
   repositories {
       maven { url "${ossimMavenProxy}" }
-      if( Boolean.parseBoolean( System.env.WWW_CONNECTED ) ) {
+      if( !System.env.WWW_CONNECTED || Boolean.parseBoolean( System.env.WWW_CONNECTED ) ) {
         mavenLocal()
         mavenCentral()
       }
@@ -38,9 +38,8 @@ buildscript {
 }
 
 plugins {
-  id "com.github.ben-manes.versions" version "0.17.0"
+    id "com.github.ben-manes.versions" version "0.17.0"
 }
-
 
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -56,7 +55,7 @@ group "io.ossim.omar.apps"
 
 repositories {
   maven { url "${ossimMavenProxy}" }
-  if( Boolean.parseBoolean( System.env.WWW_CONNECTED ) ) {
+  if( !System.env.WWW_CONNECTED || Boolean.parseBoolean( System.env.WWW_CONNECTED ) ) {
     mavenLocal()
     mavenCentral()
   }
