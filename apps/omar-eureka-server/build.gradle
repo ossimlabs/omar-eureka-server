@@ -9,7 +9,8 @@ buildscript {
           "WORKDIR \$HOME",
       	  "USER root",
           "RUN chmod 755 /home/omar && chmod 644 /home/omar/*.jar",
-          "USER 1001"
+          "USER 1001",
+          "CMD \$HOME/run.sh"
 
        ]
      }
