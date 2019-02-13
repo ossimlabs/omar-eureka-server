@@ -5,14 +5,6 @@ pluginManagement {
   }
 }
 
-def final O2_DEV_HOME = System.getenv('O2_DEV_HOME')
+include 'omar-eureka-server'
 
-if ( O2_DEV_HOME ) {
-
-   include 'omar-eureka-server' //,
-//	   'omar-core-plugin'
-
-   project(':omar-eureka-server').projectDir = "${O2_DEV_HOME}/omar-eureka-server/apps/omar-eureka-server" as File
-//   project(':omar-core-plugin').projectDir = "${O2_DEV_HOME}/omar-core/plugins/omar-core-plugin" as File
-
-}
+project(':omar-eureka-server').projectDir = "${O2_DEV_HOME}/omar-eureka-server/apps/omar-eureka-server" as File
