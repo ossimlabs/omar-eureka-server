@@ -7,4 +7,4 @@ pluginManagement {
 
 include 'omar-eureka-server'
 
-project(':omar-eureka-server').projectDir = "${O2_DEV_HOME}/omar-eureka-server/apps/omar-eureka-server" as File
+project(':omar-eureka-server').projectDir = "${rootProject.projectDir}/apps/omar-eureka-server" as File
