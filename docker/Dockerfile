@@ -1,9 +1,16 @@
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
+#ARG BASE_IMAGE
+#FROM ${BASE_IMAGE}
+FROM adoptopenjdk/openjdk8:alpine-slim
+
+ENV HOME /home/omar
+RUN adduser -D -h $HOME -s /sbin/nologin -u 1001 omar
+COPY run.sh $HOME
+RUN chown 1001:0 -R $HOME && \
+    chmod 777 $HOME && \
+    chmod 777 $HOME/*.sh
+USER 1001
+
 WORKDIR $HOME
 EXPOSE 8761
 COPY *.jar $HOME/
-USER root
-RUN chmod 755 /home/omar && chmod 644 /home/omar/*.jar
-USER 1001
-CMD $HOME/run.sh
+CMD ["/bin/sh", "/home/omar/run.sh"]
