@@ -32,7 +32,7 @@ node("${BUILD_NODE}"){
 
     stage ("Assemble") {
         sh """
-        gradle assemble \
+        ./gradlew assemble \
             -PossimMavenProxy=${OSSIM_MAVEN_PROXY}
         """
         archiveArtifacts "apps/*/build/libs/*.jar"
@@ -47,7 +47,7 @@ node("${BUILD_NODE}"){
         {
             // Run all tasks on the app. This includes pushing to OpenShift and S3.
             sh """
-            gradle pushDockerImage \
+            ./gradlew pushDockerImage \
                 -PossimMavenProxy=${OSSIM_MAVEN_PROXY}
             """
         }
@@ -63,7 +63,7 @@ node("${BUILD_NODE}"){
             {
                 // Run all tasks on the app. This includes pushing to OpenShift and S3.
                 sh """
-                    gradle openshiftTagImage \
+                    ./gradlew openshiftTagImage \
                         -PossimMavenProxy=${OSSIM_MAVEN_PROXY}
 
                 """
