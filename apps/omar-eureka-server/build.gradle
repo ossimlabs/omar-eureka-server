@@ -1,51 +1,140 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.DockerTagImage
+
 buildscript {
-  repositories {
-    mavenLocal()
-    maven { url ossimMavenProxy }
-  }
-  dependencies {
-    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
-    classpath 'com.bmuschko:gradle-docker-plugin:3.0.12'
-    classpath 'io.ossim:gradleDefaults:1.7-SNAPSHOT'
-  }
+   repositories {
+      mavenLocal()
+      maven { url ossimMavenProxy }
+   }
+	dependencies {
+		// classpath 'com.github.skhatri:gradle-s3-plugin:1.0.4'
+		// classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5"
+		classpath "io.ossim:gradleDefaults:${ gradleDefaultsV }"
+		classpath 'com.bmuschko:gradle-docker-plugin:5.1.0'
+	}
 }
 
 plugins {
-    id "com.github.ben-manes.versions" version "0.17.0"
-    id "org.sonarqube" version "2.6.2"
+	id 'org.springframework.boot' version '2.1.9.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'groovy'
+  id "com.github.ben-manes.versions" version "0.25.0"
+  id "org.sonarqube" version "2.8"
 }
 
-apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: "java"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-  mavenLocal()
-  maven { url ossimMavenProxy }
-}
+apply plugin: 'com.bmuschko.docker-remote-api'
 
 io.ossim.gradleDefaults.Variables.setAdditionalVariables(project)
 io.ossim.gradleDefaults.Variables.setVersionVariables(project)
-dockerBuildDir="${rootProject.projectDir}/docker"
 version "${buildVersion}-${buildVersionTag}"
-jarDestination = "${projectDir}/build/libs/${project.name}-${version}.jar"
-io.ossim.gradleDefaults.Docker.addDockerTasks(project, dockerRegistryUrl, dockerRegistryUsername, dockerRegistryPassword, name, dockerImageTag, dockerBuildDir, jarDestination, ["BASE_IMAGE": "${dockerRegistryUrl}/${dockerBaseImage}:${dockerFromTag}"])
-io.ossim.gradleDefaults.Openshift.addOpenshiftTasks(project, openshiftUrl, openshiftUsername, openshiftPassword, openshiftProjectName, openshiftServiceName,  dockerRegistryUrl, name, dockerImageTag)
+
+ext {
+	dockerBuildDir = "${ rootProject.projectDir }/docker"
+	jarDestination = "${ project.projectDir }/build/libs/${ project.name }-${ version }.jar"
+	
+	dockerImageName = name
+	dockerBuildTag = project.dockerImageTag
+	buildArguments = [ "BASE_IMAGE": "${ dockerRegistryUrl }/${ dockerBaseImage }:${ dockerFromTag }" ]
+	
+	openshiftUrl = getConfigurationProperty( 'OPENSHIFT_URL', 'openshiftUrl' )
+	openshiftUsername = getConfigurationProperty( 'OPENSHIFT_USERNAME', 'openshiftUsername' )
+	openshiftPassword = getConfigurationProperty( 'OPENSHIFT_PASSWORD', 'openshiftPassword' )
+	
+	openshiftProjectName =  getConfigurationProperty( 'OPENSHIFT_PROJECT_NAME', 'openshiftProjectName' )
+}
+
+/*
+io.ossim.gradleDefaults.Docker.addDockerTasks(
+	project, 
+	dockerRegistryUrl, 
+	dockerRegistryUsername, 
+	dockerRegistryPassword, 
+	name, 
+	dockerImageTag, 
+	dockerBuildDir, 
+	jarDestination, 
+	["BASE_IMAGE": "${dockerRegistryUrl}/${dockerBaseImage}:${dockerFromTag}"]
+)
+*/
+
+io.ossim.gradleDefaults.Openshift.addOpenshiftTasks(
+	project, 
+	openshiftUrl, 
+	openshiftUsername, 
+	openshiftPassword, 
+	openshiftProjectName, 
+	openshiftServiceName,  
+	dockerRegistryUrl, 
+	name, 
+	dockerImageTag
+)
+
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenLocal()
+	maven { url ossimMavenProxy }
+}
 
 dependencies {
-  compile "de.codecentric:spring-boot-admin-starter-client:${springBootAdminStarterClientV}"
-  compile('org.springframework.cloud:spring-cloud-starter-config')
-  compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
-	compile('org.codehaus.groovy:groovy')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+	implementation 'org.springframework.cloud:spring-cloud-config-server'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'	
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependencyV}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
+}
+
+
+docker {
+	registryCredentials {
+		url = dockerRegistryUrl
+		username = getConfigurationProperty( 'DOCKER_REGISTRY_USERNAME', 'dockerRegistryUsername' )
+		password = getConfigurationProperty( 'DOCKER_REGISTRY_PASSWORD', 'dockerRegistryPassword' )
+	}
+}
+
+// Copy the built jar to the docker directory
+task copyJarToDockerDir( type: Copy ) {
+	doFirst {
+		println "Copying ${ jarDestination } to ${ dockerBuildDir }"
+	}
+	from jarDestination
+	into dockerBuildDir
+}
+
+
+task buildDockerImage( type: DockerBuildImage, dependsOn: copyJarToDockerDir ) {
+	inputDir = project.file( dockerBuildDir )
+	tags.add( "${ dockerImageName }:${ dockerBuildTag }" )
+	buildArgs = buildArguments
+//	registryCredentials = dockerRegistryCredentials
+	doFirst {
+		if ( buildArguments )
+		{
+			println( "Using ${ buildArguments } as build args" )
+		}
+	}
+}
+
+task tagDockerImage( type: DockerTagImage, dependsOn: buildDockerImage ) {
+	imageId = "${ dockerImageName }:${ dockerBuildTag }"
+	tag = dockerBuildTag
+	repository = "${ dockerRegistryUrl }/${ dockerImageName }"
+}
+
+task pushDockerImage( type: DockerPushImage, dependsOn: 'tagDockerImage' ) {
+	imageName = "${ dockerRegistryUrl }/${ dockerImageName }"
+	tag = dockerBuildTag
+//	registryCredentials = dockerRegistryCredentials
+}
+
+String getConfigurationProperty( String envVar, String sysProp )
+{
+	System.getenv( envVar ) ?: project.findProperty( sysProp )
 }

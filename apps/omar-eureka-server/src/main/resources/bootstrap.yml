@@ -1,5 +1,7 @@
 server:
   port: 8761
+  servlet:
+    context-path: /omar-eureka-server
 
 eureka:
   client:
@@ -9,6 +11,9 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/omar-eureka-server/eureka/
   instance:
     hostname: localhost
+    preferIpAddress: true
+
+
 ---
 spring:
   profiles: production
