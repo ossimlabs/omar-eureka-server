@@ -41,7 +41,7 @@ node("${BUILD_NODE}"){
     stage ("Publish Docker App")
     {
         withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'mavenCredentials',
+                        credentialsId: 'dockerCredentials',
                         usernameVariable: 'DOCKER_REGISTRY_USERNAME',
                         passwordVariable: 'DOCKER_REGISTRY_PASSWORD']])
         {
