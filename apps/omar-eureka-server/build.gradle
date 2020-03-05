@@ -113,7 +113,7 @@ task buildDockerImage( type: DockerBuildImage, dependsOn: copyJarToDockerDir ) {
 	inputDir = project.file( dockerBuildDir )
 	tags.add( "${ dockerImageName }:${ dockerBuildTag }" )
 	buildArgs = buildArguments
-//	registryCredentials = dockerRegistryCredentials
+	registryCredentials = dockerRegistryCredentials
 	doFirst {
 		if ( buildArguments )
 		{
