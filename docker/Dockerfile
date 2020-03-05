@@ -1,7 +1,9 @@
 #ARG BASE_IMAGE
 #FROM ${BASE_IMAGE}
 #FROM adoptopenjdk/openjdk8:alpine-slim
-FROM quay.io/radiantsolutions/openjdk8:alpine-slim
+ARG DOCKER_REGISTRY=nexus-docker-private-group.ossim.io
+ARG BASE_IMAGE_TAG=release
+FROM ${DOCKER_REGISTRY}/openjdk8:${BASE_IMAGE_TAG}
 
 ENV HOME /home/omar
 RUN adduser -D -h $HOME -s /sbin/nologin -u 1001 omar
