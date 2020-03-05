@@ -2,7 +2,7 @@
 #FROM ${BASE_IMAGE}
 #FROM adoptopenjdk/openjdk8:alpine-slim
 ARG DOCKER_REGISTRY=nexus-docker-private-group.ossim.io
-ARG BASE_IMAGE_TAG=release
+ARG BASE_IMAGE_TAG=alpine-slim
 FROM ${DOCKER_REGISTRY}/openjdk8:${BASE_IMAGE_TAG}
 
 ENV HOME /home/omar
