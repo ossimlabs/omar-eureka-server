@@ -93,7 +93,7 @@ dependencyManagement {
 
 docker {
 	registryCredentials {
-		url = dockerRegistryUrl
+		url = getConfigurationProperty( 'DOCKER_REGISTRY_PRIVATE_URL', 'dockerRegistryPrivateUrl' )
 		username = getConfigurationProperty( 'DOCKER_REGISTRY_USERNAME', 'dockerRegistryUsername' )
 		password = getConfigurationProperty( 'DOCKER_REGISTRY_PASSWORD', 'dockerRegistryPassword' )
 	}
@@ -113,7 +113,6 @@ task buildDockerImage( type: DockerBuildImage, dependsOn: copyJarToDockerDir ) {
 	inputDir = project.file( dockerBuildDir )
 	tags.add( "${ dockerImageName }:${ dockerBuildTag }" )
 	buildArgs = buildArguments
-//	registryCredentials = dockerRegistryCredentials
 	doFirst {
 		if ( buildArguments )
 		{
