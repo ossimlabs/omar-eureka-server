@@ -1,0 +1,76 @@
+# Default values for omar-eureka-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+
+appName: omar-eureka-server
+
+global:
+  dockerRepository: nexus-docker-private-group.ossim.io
+  imagePullSecret:
+    registry: null
+    username: null
+    password: null
+  hostname: omar-dev.ossim.io
+
+  createIngress: true
+  useTls: false
+  useTLSClientAuth: false
+  sslCertSecretName: null
+  authSslCertSecretName: null
+
+  createImagePullSecret: true
+  useImagePullSecret: true
+  
+  createHpa: true
+
+  useSpringConfigServer: false
+
+# These variables can be overridden because of the use of the 'pluck' function:
+# - createIngress
+# - useTls
+# - useTlsClientAuth
+# - createImagePullSecret
+# - createHpa
+# - createPVs
+# - useSpringConfigServer
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1000Mi
+  requests:
+    cpu: 10m
+    memory: 500Mi
+    
+image:
+  name: omar-eureka-server
+  tag: dev
+  pullPolicy: Always
+  
+ingressPath: /omar-eureka-server
+internalPort: 8761
+externalPort: 8761
+
+livenessProbe:
+  failureThreshold: 5
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  successThreshold: 1
+  timeoutSeconds: 5
+
+
+readinessProbe:
+  failureThreshold: 15
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+
+
+terminationGracePeriodSeconds: 30
+
+envVars:
+  SPRING_PROFILES_ACTIVE: production
+  JAVA_OPTS: "-server -Xms256m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit -Djava.awt.headless=true -XshowSettings:vm -Djava.security.egd=file:/dev/./urandom"
