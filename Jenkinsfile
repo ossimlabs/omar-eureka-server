@@ -30,7 +30,7 @@ podTemplate(
       name: 'helm',
       command: 'cat',
       ttyEnabled: true
-    )
+    ),
       containerTemplate(
       image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/kubectl-aws-helm:latest",
       name: 'kubectl-aws-helm',
