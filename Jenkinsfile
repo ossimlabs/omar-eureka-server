@@ -111,7 +111,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
           sh """
-            docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-eureka-server-app:"${VERSION}" ./docker
+            docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-eureka-server:"${VERSION}" ./docker
           """
         }
       }
@@ -121,7 +121,7 @@ podTemplate(
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
         sh """
-            docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-eureka-server-app:"${VERSION}"
+            docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-eureka-server:"${VERSION}"
         """
         }
       }
